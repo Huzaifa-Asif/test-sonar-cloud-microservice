@@ -1,0 +1,9 @@
+.idea
+tests
+ecosystem.config.js
+.env.sample
+env.test.js
+.gitignore
+install.sh
+log/*
+node_modules

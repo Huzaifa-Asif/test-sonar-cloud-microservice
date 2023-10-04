@@ -1,0 +1,8 @@
+env.js
+routes/test.js
+env.test.js
+extras
+.env
+.idea/*
+.sam
+samconfig.toml
