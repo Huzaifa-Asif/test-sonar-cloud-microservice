@@ -8,8 +8,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  sonarcloudScan1:
-    name: SonarCloudScan1
+  ServiceMovieReviewApp:
+    name: Service-movie-review-app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,8 +23,8 @@ jobs:
         with:
           projectBaseDir: movie-review-app/
           
-  sonarcloudScan2:
-    name: SonarCloudScan2
+  ServiceChatApp:
+    name: service-chat-app
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -38,8 +38,8 @@ jobs:
         with:
           projectBaseDir: chat-app/
   
-  sonarcloudScan3:
-    name: SonarCloudScan2
+  LambdaSavePicture:
+    name: lambda-save-picture
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
