@@ -15,7 +15,6 @@ jobs:
   ServiceMovieReviewApp:
     name: Service-movie-review-app
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.head.ref, 'movie-review-app')
     steps:
     - uses: actions/checkout@v3
       with:
@@ -31,7 +30,6 @@ jobs:
   ServiceChatApp:
     name: service-chat-app
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.head.ref, 'chat-app')
     steps:
     - uses: actions/checkout@v3
       with:
@@ -47,7 +45,6 @@ jobs:
   LambdaSavePicture:
     name: lambda-save-picture
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.head.ref, 'lambda/save-picture')
     steps:
     - uses: actions/checkout@v3
       with:
