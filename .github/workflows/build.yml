@@ -12,9 +12,11 @@ on:
     - 'lambda/save-picture/**'
 
 jobs:
+  
   ServiceMovieReviewApp:
     name: Service-movie-review-app
     runs-on: ubuntu-latest
+    if: steps.ServiceMovieReviewApp.outputs.changed == 'true'
     steps:
     - uses: actions/checkout@v3
       with:
@@ -30,6 +32,7 @@ jobs:
   ServiceChatApp:
     name: service-chat-app
     runs-on: ubuntu-latest
+    if: steps.ServiceChatApp.outputs.changed == 'true'
     steps:
     - uses: actions/checkout@v3
       with:
@@ -45,6 +48,7 @@ jobs:
   LambdaSavePicture:
     name: lambda-save-picture
     runs-on: ubuntu-latest
+    if: steps.LambdaSavePicture.outputs.changed == 'true'
     steps:
     - uses: actions/checkout@v3
       with:
