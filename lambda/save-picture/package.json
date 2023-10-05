@@ -1,16 +1,16 @@
 {
-  "name": "save-picture",
-  "version": "1.1.5",
-  "description": "Saving picture for resources",
-  "main": "index.js",
-  "scripts": {
-    "start-lambda": "sam local start-lambda -p 3021  --host 0.0.0.0 --skip-pull-image 2>&1 | tr \"\\r\" \"\\n\"",
-    "start-lambda-dev": "sam local start-lambda -p 3021  --host 0.0.0.0",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Huzaifa",
-  "license": "ISC",
-  "devDependencies": {
-    "eslint": "^7.12.1"
-  }
+    "name": "save-picture",
+    "version": "1.1.5",
+    "description": "Saving picture for resources",
+    "main": "index.js",
+    "scripts": {
+        "start-lambda": "sam local start-lambda -p 3021  --host 0.0.0.0 --skip-pull-image 2>&1 | tr \"\\r\" \"\\n\"",
+        "start-lambda-dev": "sam local start-lambda -p 3021  --host 0.0.0.0",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Huzaifa",
+    "license": "ISC",
+    "devDependencies": {
+        "eslint": "^7.12.1"
+    }
 }
