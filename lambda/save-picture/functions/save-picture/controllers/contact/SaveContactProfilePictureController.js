@@ -1,8 +1,9 @@
 const BaseController = require('./BaseController');
 
 class SaveContactProfilePictureController extends BaseController {
+
     async update(payload) {
-        return await this.manager.savePicture(payload.id);
+        return  await this.manager.savePicture(payload.id);
     }
 }
 

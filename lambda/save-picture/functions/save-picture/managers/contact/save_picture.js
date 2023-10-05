@@ -7,22 +7,12 @@ const savePicture = async (contactId) => {
         if (!contact) {
             throw Error('Contact not found.');
         }
-        if (
-            contact.contact_standard_field.profilePic === null ||
-            contact.contact_standard_field.profilePic === '' ||
-            `${contact.id}.jpg` === contact.contact_standard_field.profilePic
-        ) {
+        if (contact.contact_standard_field.profilePic === null || contact.contact_standard_field.profilePic === '' || `${contact.id}.jpg` === contact.contact_standard_field.profilePic) {
             throw Error('Error profile pic is empty or already saved');
         }
-        const picUrl = await fileManager.uploadAttachment(
-            `${PATH_BASE_AVATAR + contact.id}.jpg`,
-            { url: contact.contact_standard_field.profilePic }
-        );
+        const picUrl = await fileManager.uploadAttachment(`${PATH_BASE_AVATAR + contact.id}.jpg`, { url: contact.contact_standard_field.profilePic });
         if (picUrl) {
-            return await ContactStandardFields.updateProfilePic(
-                contact.id,
-                `${contact.id}.jpg`
-            );
+            return await ContactStandardFields.updateProfilePic(contact.id, `${contact.id}.jpg`);
         }
     } catch (e) {
         // eslint-disable-next-line no-console
