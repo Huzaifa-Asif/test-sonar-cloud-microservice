@@ -1,55 +1,58 @@
 name: Test Sonar Microservice Project
+
 on:
   push:
-      branches:
-      - master
-      # paths:
-      # - 'lambdas/test/**'
+    branches:
+    - master
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+    - 'movie-review-app/**'
+    - 'chat-app/**'
+    - 'lambda/save-picture/**'
+
 jobs:
-  sonarcloudScan1:
-    name: SonarCloudScan1
+  ServiceMovieReviewApp:
+    name: Service-movie-review-app
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: movie-review-app/
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: movie-review-app/
           
-  sonarcloudScan2:
-    name: SonarCloudScan2
+  ServiceChatApp:
+    name: service-chat-app
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: chat-app/
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: chat-app/
   
-  sonarcloudScan3:
-    name: SonarCloudScan2
+  LambdaSavePicture:
+    name: lambda-save-picture
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: lambda/save-picture
-          
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: lambda/save-picture/
