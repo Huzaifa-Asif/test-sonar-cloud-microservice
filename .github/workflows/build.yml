@@ -12,51 +12,44 @@ on:
     - 'lambda/save-picture/**'
 
 jobs:
-  
-  ServiceMovieReviewApp:
-    name: Service-movie-review-app
+  SonarScan:
+    name: SonarCloud Scan
     runs-on: ubuntu-latest
-    if: steps.ServiceMovieReviewApp.outputs.changed == 'true'
+    outputs:
+      movie-review-app-changed: ${{ steps.check-changes.outputs.movie-review-app-changed }}
+      chat-app-changed: ${{ steps.check-changes.outputs.chat-app-changed }}
+      lambda-save-picture-changed: ${{ steps.check-changes.outputs.lambda-save-picture-changed }}
     steps:
+    - name: Check for changes
+      id: check-changes
+      run: |
+        echo "::set-output name=movie-review-app-changed::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'movie-review-app/' && echo true || echo false)"
+        echo "::set-output name=chat-app-changed::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'chat-app/' && echo true || echo false)"
+        echo "::set-output name=lambda-save-picture-changed::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'lambda/save-picture/' && echo true || echo false)"
     - uses: actions/checkout@v3
       with:
-        fetch-depth: 0  
-    - name: SonarCloud Scan
+        fetch-depth: 0
+    - name: SonarCloud Scan for movie-review-app
+      if: steps.check-changes.outputs.movie-review-app-changed == 'true'
       uses: SonarSource/sonarcloud-github-action@master
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         projectBaseDir: movie-review-app/
-          
-  ServiceChatApp:
-    name: service-chat-app
-    runs-on: ubuntu-latest
-    if: steps.ServiceChatApp.outputs.changed == 'true'
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0  
-    - name: SonarCloud Scan
+    - name: SonarCloud Scan for chat-app
+      if: steps.check-changes.outputs.chat-app-changed == 'true'
       uses: SonarSource/sonarcloud-github-action@master
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         projectBaseDir: chat-app/
-  
-  LambdaSavePicture:
-    name: lambda-save-picture
-    runs-on: ubuntu-latest
-    if: steps.LambdaSavePicture.outputs.changed == 'true'
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0  
-    - name: SonarCloud Scan
+    - name: SonarCloud Scan for lambda/save-picture
+      if: steps.check-changes.outputs.lambda-save-picture-changed == 'true'
       uses: SonarSource/sonarcloud-github-action@master
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       with:
         projectBaseDir: lambda/save-picture/
