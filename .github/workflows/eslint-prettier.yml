@@ -3,11 +3,11 @@ name: ESLint and Prettier for Microservices
 on:
   push:
     branches:
-      - main  # Adjust this to your main branch if it's named differently
+      - master  # Adjust this to your main branch if it's named differently
   pull_request:
     types: [opened, synchronize, reopened]
     branches:
-      - main
+      - master
 
 jobs:
   lint-and-format:
@@ -43,5 +43,5 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add -A
-        git commit -m "Fix ESLint and Prettier issues in ${{ matrix.service }}" || echo "No changes to commit in ${{ matrix.service }}"
+        git commit -m "fix: ESLint and Prettier issues in ${{ matrix.service }}" || echo "No changes to commit in ${{ matrix.service }}"
         git push
