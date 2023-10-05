@@ -30,7 +30,7 @@ jobs:
 
     - name: Install dependencies
       working-directory: ./${{ matrix.service }}
-      run: npm ci
+      run: npm i
 
     - name: Run ESLint and Prettier
       working-directory: ./${{ matrix.service }}
