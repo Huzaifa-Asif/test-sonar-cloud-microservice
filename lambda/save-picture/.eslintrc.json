@@ -5,9 +5,7 @@
         "browser": true,
         "es6": true
     },
-    "extends": [
-        "eslint:recommended"
-    ],
+    "extends": ["eslint:recommended"],
     "globals": {
         "Atomics": "readonly",
         "SharedArrayBuffer": "readonly",
@@ -39,10 +37,13 @@
         "no-trailing-spaces": "error",
         "no-multiple-empty-lines": "error",
         "eol-last": ["error", "always"],
-        "prefer-destructuring": ["error", {
-            "array": true,
-            "object": true
-        }],
+        "prefer-destructuring": [
+            "error",
+            {
+                "array": true,
+                "object": true
+            }
+        ],
         "no-var": "error",
         "no-const-assign": "error",
         "object-shorthand": "error",
@@ -50,15 +51,18 @@
         "prefer-template": "error",
         "space-before-blocks": "error",
         "sort-imports": "error",
-        "keyword-spacing": ["error", {
-            "before": true,
-            "after": true,
-            "overrides": {
-              "return": { "after": true },
-              "throw": { "after": true },
-              "case": { "after": true }
+        "keyword-spacing": [
+            "error",
+            {
+                "before": true,
+                "after": true,
+                "overrides": {
+                    "return": { "after": true },
+                    "throw": { "after": true },
+                    "case": { "after": true }
+                }
             }
-        }],
+        ],
         "object-curly-spacing": ["error", "always"],
         "template-curly-spacing": ["error", "never"],
         "no-console": 1,
