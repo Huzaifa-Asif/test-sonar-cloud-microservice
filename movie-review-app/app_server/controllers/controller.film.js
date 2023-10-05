@@ -15,6 +15,11 @@ module.exports.addFilm = async (filmForm, callback) => {
 	film.create(filmForm, callback);
 }
 
+// Add Film
+module.exports.addFilm = async (filmForm, callback) => {
+	film.create(filmForm, callback);
+}
+
 
 // Update Film
 module.exports.updateFilm = async (filmId, filmForm, options, callback) => {
