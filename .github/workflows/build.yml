@@ -1,55 +1,57 @@
 name: Test Sonar Microservice Project
+
 on:
   push:
-      branches:
-      - master
-      # paths:
-      # - 'lambdas/test/**'
+    branches:
+    - master
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+    - 'movie-review-app/**'
+    - 'chat-app/**'
+    - 'lambda/save-picture/**'
+
 jobs:
-  sonarcloudScan1:
-    name: SonarCloudScan1
+  SonarScan:
+    name: SonarCloud Scan
     runs-on: ubuntu-latest
+    outputs:
+      movie-review-app-changed: ${{ steps.check-changes.outputs.movie-review-app-changed }}
+      chat-app-changed: ${{ steps.check-changes.outputs.chat-app-changed }}
+      lambda-save-picture-changed: ${{ steps.check-changes.outputs.lambda-save-picture-changed }}
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: movie-review-app/
-          
-  sonarcloudScan2:
-    name: SonarCloudScan2
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: chat-app/
-  
-  sonarcloudScan3:
-    name: SonarCloudScan2
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: lambda/save-picture
-          
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Fetch base branch
+      run: git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+    - name: Check for changes
+      id: check-changes
+      run: |
+        echo "::set-output name=movie-review-app-changed::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -q 'movie-review-app/' && echo true || echo false)"
+        echo "::set-output name=chat-app-changed::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -q 'chat-app/' && echo true || echo false)"
+        echo "::set-output name=lambda-save-picture-changed::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -q 'lambda/save-picture/' && echo true || echo false)"
+    - name: SonarCloud Scan for movie-review-app
+      if: steps.check-changes.outputs.movie-review-app-changed == 'true'
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: movie-review-app/
+    - name: SonarCloud Scan for chat-app
+      if: steps.check-changes.outputs.chat-app-changed == 'true'
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: chat-app/
+    - name: SonarCloud Scan for lambda/save-picture
+      if: steps.check-changes.outputs.lambda-save-picture-changed == 'true'
+      uses: SonarSource/sonarcloud-github-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      with:
+        projectBaseDir: lambda/save-picture/

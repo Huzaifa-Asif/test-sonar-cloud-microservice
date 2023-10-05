@@ -4,17 +4,27 @@ const SQS_RECORD_CACHE_KEY = 'sqs:record:{eventSourceARN}:{messageId}';
 
 exports.lambdaHandler = async (event) => {
     try {
-        const payloads = [].concat(...await Promise.all(event.Records.map(async record => {
-            const key = SQS_RECORD_CACHE_KEY.replace('{eventSourceARN}', record.eventSourceARN).replace('{messageId}', record.messageId);
-            if (await redis.hasSQSRecord(key))
-                return;
-            return JSON.parse(record.body);
-        })));
+        const payloads = [].concat(
+            ...(await Promise.all(
+                event.Records.map(async (record) => {
+                    const key = SQS_RECORD_CACHE_KEY.replace(
+                        '{eventSourceARN}',
+                        record.eventSourceARN
+                    ).replace('{messageId}', record.messageId);
+                    if (await redis.hasSQSRecord(key)) return;
+                    return JSON.parse(record.body);
+                })
+            ))
+        );
 
         // eslint-disable-next-line no-console
         console.log(payloads);
 
-        await Promise.all(ControllerFactory.getInstance(payloads).map(async (controller) => await controller.handle()));
+        await Promise.all(
+            ControllerFactory.getInstance(payloads).map(
+                async (controller) => await controller.handle()
+            )
+        );
 
         return {
             statusCode: 200,
