@@ -2,174 +2,162 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 
 Description: >
-    save-picture
+  save-picture
 
-    Saving picture for resources
+  Saving picture for resources
 
 Metadata:
-    Name: 'Save-Picture-Lambda'
-    StagingStackName: 'staging--save-picture'
-    ProductionStackName: 'production--save-picture'
+  Name: "Save-Picture-Lambda"
+  StagingStackName: "staging--save-picture"
+  ProductionStackName: "production--save-picture"
 
 Parameters:
-    Environment:
-        Type: String
-        Default: local
-        AllowedValues:
-            - 'local'
-            - 'staging'
-            - 'production'
+  Environment:
+    Type: String
+    Default: local
+    AllowedValues:
+      - "local"
+      - "staging"
+      - "production"
 
 Mappings:
-    VPC:
-        staging:
-            id: 'staging:VPC'
-        production:
-            id: 'production:VPC'
+  VPC:
+    staging:
+      id: "staging:VPC"
+    production:
+      id: "production:VPC"
 
-    PrivateSubnet01:
-        staging:
-            id: 'staging:PrivateSubnet01'
-        production:
-            id: 'production:PrivateSubnet01'
-    PrivateSubnet02:
-        staging:
-            id: 'staging:PrivateSubnet02'
-        production:
-            id: 'production:PrivateSubnet02'
-    PrivateSubnet03:
-        staging:
-            id: 'staging:PrivateSubnet03'
-        production:
-            id: 'production:PrivateSubnet03'
+  PrivateSubnet01:
+    staging:
+      id: "staging:PrivateSubnet01"
+    production:
+      id: "production:PrivateSubnet01"
+  PrivateSubnet02:
+    staging:
+      id: "staging:PrivateSubnet02"
+    production:
+      id: "production:PrivateSubnet02"
+  PrivateSubnet03:
+    staging:
+      id: "staging:PrivateSubnet03"
+    production:
+      id: "production:PrivateSubnet03"
 
 Globals:
-    Function:
-        Timeout: 360
-        VpcConfig:
-            SecurityGroupIds:
-                - Fn::ImportValue: !Sub '${Environment}:InternalLambdaSecurityGroup'
-            SubnetIds:
-                - Fn::ImportValue:
-                      !FindInMap [PrivateSubnet01, !Ref Environment, 'id']
-                - Fn::ImportValue:
-                      !FindInMap [PrivateSubnet02, !Ref Environment, 'id']
-                - Fn::ImportValue:
-                      !FindInMap [PrivateSubnet03, !Ref Environment, 'id']
-        Layers:
-            - !Ref AppLayer
+  Function:
+    Timeout: 360
+    VpcConfig:
+      SecurityGroupIds:
+        - Fn::ImportValue:
+            !Sub "${Environment}:InternalLambdaSecurityGroup"
+      SubnetIds:
+        - Fn::ImportValue:
+            !FindInMap [PrivateSubnet01, !Ref Environment, "id"]
+        - Fn::ImportValue:
+            !FindInMap [PrivateSubnet02, !Ref Environment, "id"]
+        - Fn::ImportValue:
+            !FindInMap [PrivateSubnet03, !Ref Environment, "id"]
+    Layers:
+      - !Ref AppLayer
 
 Resources:
-    SavePictureLambdaVersion:
-        Type: AWS::Lambda::Version
-        Properties:
-            FunctionName: !Ref SavePictureFunction
-            Description: 'SavePictureLambdaVersion - V1'
+  SavePictureLambdaVersion:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref SavePictureFunction
+      Description: 'SavePictureLambdaVersion - V1'
 
-    SavePictureLambdaAlias:
-        Type: AWS::Lambda::Alias
-        Properties:
-            FunctionName: !Ref SavePictureFunction
-            FunctionVersion: !GetAtt SavePictureLambdaVersion.Version
-            Name: 'FAlias'
+  SavePictureLambdaAlias:
+    Type: AWS::Lambda::Alias
+    Properties:
+      FunctionName: !Ref SavePictureFunction
+      FunctionVersion: !GetAtt SavePictureLambdaVersion.Version
+      Name: 'FAlias'
 
-    SavePictureFunction:
-        Type: AWS::Serverless::Function
-        Properties:
-            CodeUri: functions/save-picture/
-            FunctionName: !Join ['--', [!Ref Environment, 'ms-save-picture']]
-            Handler: app.lambdaHandler
-            Runtime: nodejs16.x
-            Role: !GetAtt SavePictureFunctionRole.Arn
-            Layers:
-                - !Ref MySqlLayer
-            Events:
-                MySQSEvent:
-                    Type: SQS
-                    Properties:
-                        Queue: !GetAtt SavePictureQueue.Arn
-                        BatchSize: 10
-                        ScalingConfig:
-                            MaximumConcurrency: 4
+  SavePictureFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/save-picture/
+      FunctionName: !Join ["--", [!Ref Environment, "ms-save-picture"]]
+      Handler: app.lambdaHandler
+      Runtime: nodejs16.x
+      Role: !GetAtt SavePictureFunctionRole.Arn
+      Layers:
+        - !Ref MySqlLayer
+      Events:
+        MySQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt SavePictureQueue.Arn
+            BatchSize: 10
+            ScalingConfig:
+              MaximumConcurrency: 4
 
-    MySqlLayer:
-        Type: AWS::Serverless::LayerVersion
-        Properties:
-            LayerName:
-                !Join ['--', [!Ref Environment, 'ms-save-picture-mySqlLayer']]
-            Description: Dependencies for mysql
-            ContentUri: layers/mysql
-            CompatibleRuntimes:
-                - nodejs16.x
-            LicenseInfo: 'MIT'
-            RetentionPolicy: Retain
+  MySqlLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Join ["--", [!Ref Environment, "ms-save-picture-mySqlLayer"]]
+      Description: Dependencies for mysql
+      ContentUri: layers/mysql
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
 
-    AppLayer:
-        Type: AWS::Serverless::LayerVersion
-        Properties:
-            LayerName:
-                !Join ['--', [!Ref Environment, 'ms-save-picture-appLayer']]
-            Description: Dependencies for env and common utilities
-            ContentUri: layers/app
-            CompatibleRuntimes:
-                - nodejs16.x
-            LicenseInfo: 'MIT'
-            RetentionPolicy: Retain
+  AppLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Join ["--", [!Ref Environment, "ms-save-picture-appLayer"]]
+      Description: Dependencies for env and common utilities
+      ContentUri: layers/app
+      CompatibleRuntimes:
+        - nodejs16.x
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
 
-    SavePictureQueue:
-        Type: AWS::SQS::Queue
-        Properties:
-            QueueName: !Join ['--', [!Ref Environment, 'ms-save-picture-queue']]
-            VisibilityTimeout: 43200 # 12 hours
+  SavePictureQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Join ["--", [!Ref Environment, "ms-save-picture-queue"]]
+      VisibilityTimeout: 43200 # 12 hours
 
-    SavePictureFunctionRole:
-        Type: AWS::IAM::Role
-        Properties:
-            RoleName:
-                !Join [
-                    '--',
-                    [
-                        !Ref Environment,
-                        'ms-save-picture-SavePictureFunctionRole'
-                    ]
-                ]
-            AssumeRolePolicyDocument:
-                Statement:
-                    - Action:
-                          - sts:AssumeRole
-                      Effect: Allow
-                      Principal:
-                          Service:
-                              - lambda.amazonaws.com
-                Version: 2012-10-17
-            ManagedPolicyArns:
-                - arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole
-                - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-                - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+  SavePictureFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Join ["--", [!Ref Environment, "ms-save-picture-SavePictureFunctionRole"]]
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action:
+              - sts:AssumeRole
+            Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+        Version: 2012-10-17
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
 
-    SavePicturePolicy:
-        Type: AWS::IAM::Policy
-        Properties:
-            Roles:
-                - !Ref SavePictureFunctionRole
-            PolicyName:
-                !Join [
-                    '--',
-                    [!Ref Environment, 'ms-save-picture-SavePicturePolicy']
-                ]
-            PolicyDocument:
-                Version: 2012-10-17
-                Statement:
-                    - Effect: Allow
-                      Action:
-                          - s3:PutObject
-                          - s3:PutObjectAcl
-                          - s3:GetObject
-                      Resource:
-                          - !Sub 'arn:aws:s3:::${Environment}--bucket/*'
-                          - !Sub 'arn:aws:s3:::${Environment}--respond-io-main-bucket/*'
+  SavePicturePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      Roles:
+        - !Ref SavePictureFunctionRole
+      PolicyName: !Join ["--", [!Ref Environment, "ms-save-picture-SavePicturePolicy"]]
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:PutObjectAcl
+              - s3:GetObject
+            Resource:
+              - !Sub 'arn:aws:s3:::${Environment}--bucket/*'
+              - !Sub 'arn:aws:s3:::${Environment}--respond-io-main-bucket/*'
 
 Outputs:
-    SavePictureQueue:
-        Description: 'SavePictureQueue endpoint'
-        Value: !Ref SavePictureQueue
+  SavePictureQueue:
+    Description: "SavePictureQueue endpoint"
+    Value: !Ref SavePictureQueue

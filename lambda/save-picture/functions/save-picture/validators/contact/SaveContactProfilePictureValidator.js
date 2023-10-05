@@ -1,6 +1,7 @@
 const BaseValidator = require('./BaseValidator');
 
 class SaveContactProfilePictureValidator extends BaseValidator {
+
     getSchema() {
         return {
             type: 'object',
@@ -11,6 +12,7 @@ class SaveContactProfilePictureValidator extends BaseValidator {
             required: ['id', 'type']
         };
     }
+
 }
 
 module.exports = SaveContactProfilePictureValidator;
