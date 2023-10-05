@@ -2,7 +2,7 @@ const ValidatorFactory = require('../../factory/ValidatorFactory');
 const ManagerFactory = require('../../factory/ManagerFactory');
 
 class BaseController {
-    constructor( updateProfile) {
+    constructor(updateProfile) {
         this.__updateProfile = updateProfile;
         this.manager = ManagerFactory.getInstance(updateProfile);
     }
@@ -28,14 +28,11 @@ class BaseController {
             console.log(e);
             return null;
         }
-
     }
 
     async update() {
         throw Error('update() is not implemented');
     }
-
 }
-
 
 module.exports = BaseController;
