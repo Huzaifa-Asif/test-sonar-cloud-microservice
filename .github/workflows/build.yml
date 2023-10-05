@@ -20,15 +20,17 @@ jobs:
       chat-app-changed: ${{ steps.check-changes.outputs.chat-app-changed }}
       lambda-save-picture-changed: ${{ steps.check-changes.outputs.lambda-save-picture-changed }}
     steps:
-    - name: Check for changes
-      id: check-changes
-      run: |
-        echo "::set-output name=movie-review-app-changed::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'movie-review-app/' && echo true || echo false)"
-        echo "::set-output name=chat-app-changed::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'chat-app/' && echo true || echo false)"
-        echo "::set-output name=lambda-save-picture-changed::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'lambda/save-picture/' && echo true || echo false)"
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+    - name: Fetch base branch
+      run: git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+    - name: Check for changes
+      id: check-changes
+      run: |
+        echo "::set-output name=movie-review-app-changed::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -q 'movie-review-app/' && echo true || echo false)"
+        echo "::set-output name=chat-app-changed::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -q 'chat-app/' && echo true || echo false)"
+        echo "::set-output name=lambda-save-picture-changed::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} | grep -q 'lambda/save-picture/' && echo true || echo false)"
     - name: SonarCloud Scan for movie-review-app
       if: steps.check-changes.outputs.movie-review-app-changed == 'true'
       uses: SonarSource/sonarcloud-github-action@master
