@@ -6,6 +6,7 @@ const schema = mongoose.Schema;
 // User Schema
 
 const userSchema = new schema({
+
     name: {
         type: String
     },
@@ -14,13 +15,15 @@ const userSchema = new schema({
     },
     password: {
         type: String
-    }
-});
-userSchema.methods.hashPassword = function (password) {
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-};
-userSchema.methods.comparePassword = function (password, hash) {
-    return bcrypt.compareSync(password, hash);
-};
+    },
 
-const user = (module.exports = mongoose.model('User', userSchema));
+
+})
+userSchema.methods.hashPassword = function (password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
+}
+userSchema.methods.comparePassword = function (password, hash) {
+    return bcrypt.compareSync(password, hash)
+}
+
+const user = module.exports = mongoose.model('User', userSchema);
