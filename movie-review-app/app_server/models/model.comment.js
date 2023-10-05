@@ -6,21 +6,20 @@ const schema = mongoose.Schema;
 
 const commentSchema = new schema({
     filmId: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'Film',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Film'
     },
     userId: {
-        type: mongoose.Schema.Types.ObjectId, ref: 'User',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     text: {
-        type: String,
+        type: String
     },
     createdAt: {
         type: Date,
         default: Date.now
-    },
+    }
+});
 
-
-})
-
-
-const comment = module.exports = mongoose.model('Comment', commentSchema);
+const comment = (module.exports = mongoose.model('Comment', commentSchema));

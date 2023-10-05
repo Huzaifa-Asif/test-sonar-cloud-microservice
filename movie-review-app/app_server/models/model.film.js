@@ -5,37 +5,34 @@ const schema = mongoose.Schema;
 // Film Schema
 
 const filmSchema = new schema({
-    
-    name:{
+    name: {
         type: String
     },
-    description:{
+    description: {
         type: String
     },
-    realeaseDate:{
+    realeaseDate: {
         type: Date
     },
-    rating:{
+    rating: {
         type: Number
     },
-    ticketPrice:{
+    ticketPrice: {
         type: Number
     },
-    country:{
-        type: String,
+    country: {
+        type: String
     },
-    genre:{
-        type: String,
+    genre: {
+        type: String
     },
-    photo:{
-        type: String,
+    photo: {
+        type: String
     },
-    createdAt:{
+    createdAt: {
         type: Date,
         default: Date.now
-    },
-  
-})
+    }
+});
 
-
-const film= module.exports = mongoose.model('Film',filmSchema);
+const film = (module.exports = mongoose.model('Film', filmSchema));

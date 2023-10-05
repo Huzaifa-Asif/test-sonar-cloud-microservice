@@ -1,33 +1,28 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var comment = require('../controllers/controller.comment.js');
-
+const comment = require('../controllers/controller.comment.js');
 
 //Add comment
-router.post('/add',function (req, res) {
-    var commentForm = req.body;
+router.post('/add', function (req, res) {
+    const commentForm = req.body;
 
-    comment.addComment(commentForm  ,function (err, commentResult) {
+    comment.addComment(commentForm, function (err, commentResult) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
-        }
-        else{
+        } else {
             return res.json({
-                message: "comment Added successfully",
-                status: true, 
+                message: 'comment Added successfully',
+                status: true,
                 data: commentResult
             });
         }
-
     });
-
 });
-
 
 //Get All Comments By filmId
 router.get('/get_all_by_filmid/:filmId', function (req, res) {
@@ -35,27 +30,22 @@ router.get('/get_all_by_filmid/:filmId', function (req, res) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
-        }
-        else if(result.length>0){
+        } else if (result.length > 0) {
             return res.json({
-                message: "Comments Exist",
+                message: 'Comments Exist',
                 status: true,
                 data: result
             });
-        }
-        else{
-            return res.json({ 
-                message: "No Comment Exist with this filmId",
+        } else {
+            return res.json({
+                message: 'No Comment Exist with this filmId',
                 status: false
             });
         }
-        
     });
-
 });
-
 
 module.exports = router;
