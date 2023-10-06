@@ -48,7 +48,16 @@ app.get('/', (req, res) => {
 app.use('/film', routeFilm);
 app.use('/user', routeUser);
 app.use('/comment', routeComment);
-
+// Introducing a security vulnerability: No Rate Limiting
+app.post('/unprotected-login', (req, res) => {
+  const { username, password } = req.body;
+  // Simulate a login attempt without rate limiting
+  if (username === "admin" && password === "password123") {
+    res.json({ message: "Logged in!" });
+  } else {
+    res.json({ message: "Invalid credentials!" });
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
