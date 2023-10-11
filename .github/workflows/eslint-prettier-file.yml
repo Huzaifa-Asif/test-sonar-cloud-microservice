@@ -42,8 +42,13 @@ jobs:
       run: |
         for file in ${{ steps.getfile.outputs.files }}; do
           if [[ "$file" == *.js ]]; then
-            npx eslint $file --fix --max-warnings 1000 || true
-            npx prettier $file --write
+            echo "ESLint proposed changes for $file:"
+            npx eslint $file --format=compact
+            echo "Prettier proposed changes for $file:"
+            npx prettier $file --check
+            # If you want to apply the changes, uncomment the following lines:
+            # npx eslint $file --fix
+            # npx prettier $file --write
           fi
         done
 
