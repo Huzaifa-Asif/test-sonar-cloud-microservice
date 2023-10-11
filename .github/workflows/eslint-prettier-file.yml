@@ -53,7 +53,7 @@ jobs:
         git config --local user.name "GitHub Action"
         git add -A
         git commit -m "fix: ESLint and Prettier issues in ${{ matrix.service }}" || echo "No changes to commit in ${{ matrix.service }}"
-        git push origin ${{ github.head_ref }}
+        git push origin ${{ github.base_ref }}
 
     - name: Pull latest changes
-      run: git pull origin ${{ github.head_ref }}
+      run: git pull origin ${{ github.base_ref }}
