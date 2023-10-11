@@ -44,7 +44,7 @@ jobs:
     - name: Run ESLint and Prettier on changed files
       if: steps.getfile.outputs.files != ''
       run: |
-        echo "Before Foor Loop"
+        echo "Files to check: ${{ steps.getfile.outputs.files }}"
         for file in ${{ steps.getfile.outputs.files }}; do
           if [[ "$file" == *.js ]]; then
             echo "ESLint proposed changes for $file:"
@@ -62,7 +62,7 @@ jobs:
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add -A
-        git commit -m "fix: ESLint and Prettier issues in ${{ matrix.service }}" || echo "No changes to commit in ${{ matrix.service }}"
+        git commit -m "fix: ESLint and Prettier issues" || echo "No changes to commit"
         git push origin HEAD:${{ github.head_ref }}
 
     - name: Pull latest changes
