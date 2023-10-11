@@ -44,6 +44,7 @@ jobs:
     - name: Run ESLint and Prettier on changed files
       if: steps.getfile.outputs.files != ''
       run: |
+        echo "Before Foor Loop"
         for file in ${{ steps.getfile.outputs.files }}; do
           if [[ "$file" == *.js ]]; then
             echo "ESLint proposed changes for $file:"
