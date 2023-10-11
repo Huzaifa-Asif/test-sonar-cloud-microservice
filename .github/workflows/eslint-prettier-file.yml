@@ -36,7 +36,18 @@ jobs:
       id: getfile
       run: |
         echo "::set-output name=files::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} -- ./${{ matrix.service }})"
-    
+        file_list=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} -- ./${{ matrix.service }})
+        for file in ${{ file_list }}; do
+          if [[ "$file" == *.js ]]; then
+            echo "2 ESLint proposed changes for $file:"
+            npx eslint $file --format=compact
+            echo "2 Prettier proposed changes for $file:"
+            npx prettier $file --check
+            npx eslint $file --fix
+            npx prettier $file --write
+          fi
+        done
+
     - name: Checkout PR's branch for committing
       if: steps.getfile.outputs.files != ''
       run: git checkout ${{ github.head_ref }}
