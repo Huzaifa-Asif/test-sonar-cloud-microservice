@@ -48,7 +48,7 @@ jobs:
       if: steps.getfile.outputs.result != ''
       run: |
         echo "Changed Files: ${{ steps.getfile.outputs.result }}"
-        git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge
+        git fetch origin
         git checkout -B ${{ github.head_ref }} FETCH_HEAD
 
     - name: Run ESLint and Prettier on changed files
