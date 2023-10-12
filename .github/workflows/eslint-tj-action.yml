@@ -1,0 +1,83 @@
+name: TJ ESLint Changed Files
+
+on: [push, pull_request]
+
+jobs:
+  eslint-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x] # Define the Node.js version(s) you want the check to run on.
+    
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    # Install dependencies here, if needed, for each project
+    # - name: Install dependencies for movie-review-app
+    #   run: |
+    #     cd movie-review-app
+    #     npm install
+
+    # - name: Install dependencies for chat-app
+    #   run: |
+    #     cd chat-app
+    #     npm install
+
+    # - name: Install dependencies for lambda/save-picture
+    #   run: |
+    #     cd lambda/save-picture
+    #     npm install
+
+    - name: Run tj-actions/eslint-changed-files
+      uses: tj-actions/eslint-changed-files@v21
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically creates a `GITHUB_TOKEN` secret to use in your workflow.
+        eslint_flags: '--ext .js,.jsx,.ts,.tsx' # Specify the file extensions you want ESLint to check
+
+    - name: Fix Lint Errors
+      if: failure()
+      run: yarn stylelint:fix
+
+    - name: Fix ESLint errors for a nested project with changed files and .eslintignore
+      if: failure()
+      uses: ./
+      with:
+        path: "/"
+        # config_path: ".eslintrc.js"
+        file_extensions: |
+            **/*.ts
+            **/*.tsx
+            **/*.js
+            **/*.jsx
+        extra_args: "--fix"
+        # ignore_path: ".eslintignore"
+        skip_annotations: true
+
+    - name: Verify Changed files
+      if: failure()
+      uses: tj-actions/verify-changed-files@v16
+      id: verify-changed-files
+      with:
+        files: |
+          **/*.{js,.jsx,ts,tsx}
+
+    - name: Commit outstanding changes
+      if: failure() && steps.verify-changed-files.outputs.files_changed == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add ${{ steps.verify-changed-files.outputs.changed_files }}
+        git commit -m "lint fixes."
+
+    - name: Push changes
+      if: failure() && steps.verify-changed-files.outputs.files_changed == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.PAT_TOKEN }}
+        branch: ${{ github.head_ref }}
