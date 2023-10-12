@@ -1,35 +1,35 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var film = require('../controllers/controller.film.js');
-const mediaUpload = require("../../config/media_upload");
+const film = require('../controllers/controller.film.js');
+const mediaUpload = require('../../config/media_upload');
 
 //Add film
 router.post('/add', mediaUpload.fields([
     {
-      name: 'photo', maxCount: 1
+        name: 'photo', maxCount: 1
     }
-  ]),function (req, res) {
-    var filmForm = req.body;
+]), function (req, res) {
+    const filmForm = req.body;
 
-    console.log(filmForm)
+    console.log(filmForm);
 
-    if(req.files.photo){
+    if (req.files.photo) {
         filmForm.photo = req.files.photo[0].location;
     }
 
-    film.addFilm(filmForm  ,function (err, filmResult) {
+    film.addFilm(filmForm, function (err, filmResult) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
         }
-        else{
+        else {
             return res.json({
-                message: "film Added successfully",
-                status: true, 
+                message: 'film Added successfully',
+                status: true,
                 data: filmResult
             });
         }
@@ -45,25 +45,25 @@ router.get('/get_all', function (req, res) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
         }
-        else if(result.length>0){
+        else if (result.length > 0) {
             return res.json({
-                message: "film Exist",
+                message: 'film Exist',
                 status: true,
                 data: result
             });
         }
-        else{
-            return res.json({ 
-                message: "No film Exist",
+        else {
+            return res.json({
+                message: 'No film Exist',
                 status: false,
                 data: result
             });
         }
-        
+
     });
 
 });
@@ -74,29 +74,28 @@ router.get('/get_all_film', function (req, res) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
         }
-        else if(result.length>0){
+        else if (result.length > 0) {
             return res.json({
-                message: "film Exist",
+                message: 'film Exist',
                 status: true,
                 data: result
             });
         }
-        else{
-            return res.json({ 
-                message: "No film Exist",
+        else {
+            return res.json({
+                message: 'No film Exist',
                 status: false,
                 data: result
             });
         }
-        
+
     });
 
 });
-
 
 
 //Get film By Id
@@ -105,24 +104,24 @@ router.get('/get_by_id/:filmId', function (req, res) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
         }
-        else if(result.length>0){
+        else if (result.length > 0) {
             return res.json({
-                message: "film Exist",
+                message: 'film Exist',
                 status: true,
                 data: result
             });
         }
-        else{
-            return res.json({ 
-                message: "No film Exist with this filmId",
+        else {
+            return res.json({
+                message: 'No film Exist with this filmId',
                 status: false
             });
         }
-        
+
     });
 
 });
@@ -131,29 +130,29 @@ router.get('/get_by_id/:filmId', function (req, res) {
 //Update Pin film
 router.patch('/update/:filmId', mediaUpload.fields([
     {
-      name: 'photo', maxCount: 1
+        name: 'photo', maxCount: 1
     }
-  ]),function (req, res) {
-    var filmForm = req.body;
-    var filmId = req.params.filmId;
-    console.log(filmForm)
+]), function (req, res) {
+    const filmForm = req.body;
+    const { filmId } = req.params;
+    console.log(filmForm);
 
-    if(req.files.photo){
+    if (req.files.photo) {
         filmForm.photo = req.files.photo[0].location;
     }
 
-    film.updateFilm(filmId, filmForm, {new: true}, function (err, filmResult) {
+    film.updateFilm(filmId, filmForm, { new: true }, function (err, filmResult) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
         }
-        else{
+        else {
             return res.json({
-                message: "film Updated successfully",
-                status: true, 
+                message: 'film Updated successfully',
+                status: true,
                 data: filmResult
             });
         }
@@ -169,23 +168,23 @@ router.get('/remove_by_id/:filmId', function (req, res) {
         if (err) {
             console.log(err);
             return res.status(500).json({
-                message: "Error in Connecting to DB",
+                message: 'Error in Connecting to DB',
                 status: false
             });
         }
-        else if(result){
+        else if (result) {
             return res.json({
-                message: "film Removed",
-                status: true,
+                message: 'film Removed',
+                status: true
             });
         }
-        else{
-            return res.json({ 
-                message: "film not removed",
+        else {
+            return res.json({
+                message: 'film not removed',
                 status: false
             });
         }
-        
+
     });
 
 });
