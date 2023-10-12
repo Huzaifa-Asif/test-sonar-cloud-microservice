@@ -1,0 +1,78 @@
+# name: ESLint and Prettier for Microservices
+
+# on:
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#     branches:
+#       - master
+
+# jobs:
+#   lint-and-format:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         service:
+#           - 'movie-review-app'
+#           - 'chat-app'
+#           - 'lambda/save-picture'
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v3
+#       with:
+#         fetch-depth: 0
+#     - name: Fetch base branch
+#       run: git fetch origin ${{ github.base_ref }}:${{ github.base_ref }}
+
+#     - name: Set up Node.js
+#       uses: actions/setup-node@v2
+#       with:
+#         node-version: '14'  # You can adjust this to your project's Node.js version
+
+#     - name: Get list of changed files
+#       id: getfile
+#       run: |
+#         echo "::set-output name=files::$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} -- ./${{ matrix.service }})"
+#         file_list=$(git diff --name-only ${{ github.base_ref }} ${{ github.sha }} -- ./${{ matrix.service }})
+#         for file in $file_list; do
+#           if [[ "$file" == *.js ]]; then
+#             echo "2 ESLint proposed changes for $file:"
+#             npx eslint $file --format=compact
+#             echo "2 Prettier proposed changes for $file:"
+#             npx prettier $file --check
+#             npx eslint $file --fix
+#             npx prettier $file --write
+#           fi
+#         done
+
+#     - name: Checkout PR's branch for committing
+#       if: steps.getfile.outputs.files != ''
+#       run: git checkout ${{ github.head_ref }}
+
+#     - name: Run ESLint and Prettier on changed files
+#       if: steps.getfile.outputs.files != ''
+#       run: |
+#         echo "Files to check: ${{ steps.getfile.outputs.files }}"
+#         for file in ${{ steps.getfile.outputs.files }}; do
+#           if [[ "$file" == *.js ]]; then
+#             echo "ESLint proposed changes for $file:"
+#             npx eslint $file --format=compact
+#             echo "Prettier proposed changes for $file:"
+#             npx prettier $file --check
+#             npx eslint $file --fix
+#             npx prettier $file --write
+#           fi
+#         done
+
+#     - name: Commit changes
+#       if: steps.getfile.outputs.files != ''
+#       run: |
+#         git config --local user.email "action@github.com"
+#         git config --local user.name "GitHub Action"
+#         git add -A
+#         git commit -m "fix: ESLint and Prettier issues" || echo "No changes to commit"
+#         git push origin HEAD:${{ github.head_ref }}
+
+#     - name: Pull latest changes
+#       if: github.event.pull_request.head.repo.full_name == github.repository
+#       run: git pull origin ${{ github.head_ref }}
