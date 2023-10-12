@@ -37,14 +37,28 @@ jobs:
     - name: Run tj-actions/eslint-changed-files
       uses: tj-actions/eslint-changed-files@v21
       with:
-        extra_args: "--fix"
-        skip_annotations: true
         token: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically creates a `GITHUB_TOKEN` secret to use in your workflow.
         eslint_flags: '--ext .js,.jsx,.ts,.tsx' # Specify the file extensions you want ESLint to check
 
     - name: Fix Lint Errors
       if: failure()
       run: yarn stylelint:fix
+
+    - name: Fix ESLint errors for a nested project with changed files and .eslintignore
+      if: failure()
+      uses: ./
+      with:
+        path: "/"
+        # config_path: ".eslintrc.js"
+        file_extensions: |
+            **/*.ts
+            **/*.tsx
+            **/*.js
+            **/*.jsx
+        extra_args: "--fix"
+        # ignore_path: ".eslintignore"
+        skip_annotations: true
+
     - name: Verify Changed files
       if: failure()
       uses: tj-actions/verify-changed-files@v16
