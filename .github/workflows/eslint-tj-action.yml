@@ -39,3 +39,29 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically creates a `GITHUB_TOKEN` secret to use in your workflow.
         eslint_flags: '--ext .js,.jsx,.ts,.tsx' # Specify the file extensions you want ESLint to check
+
+    - name: Fix Lint Errors
+      if: failure()
+      run: yarn stylelint:fix
+    - name: Verify Changed files
+      if: failure()
+      uses: tj-actions/verify-changed-files@v16
+      id: verify-changed-files
+      with:
+        files: |
+          **/*.{js,.jsx,ts,tsx}
+
+    - name: Commit outstanding changes
+      if: failure() && steps.verify-changed-files.outputs.files_changed == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add ${{ steps.verify-changed-files.outputs.changed_files }}
+        git commit -m "lint fixes."
+
+    - name: Push changes
+      if: failure() && steps.verify-changed-files.outputs.files_changed == 'true'
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.PAT_TOKEN }}
+        branch: ${{ github.head_ref }}
