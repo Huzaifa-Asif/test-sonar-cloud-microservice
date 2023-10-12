@@ -1,0 +1,47 @@
+# name: ESLint and Prettier for Microservices
+
+# on:
+#   push:
+#     branches:
+#       - master  # Adjust this to your main branch if it's named differently
+#   pull_request:
+#     types: [opened, synchronize, reopened]
+#     branches:
+#       - master
+
+# jobs:
+#   lint-and-format:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         service:
+#           - 'movie-review-app'
+#           - 'chat-app'
+#           - 'lambda/save-picture'
+
+#     steps:
+#     - name: Checkout code
+#       uses: actions/checkout@v2
+#       with:
+#         ref: ${{ github.head_ref }} # Use the pull request branch
+
+#     - name: Set up Node.js
+#       uses: actions/setup-node@v2
+#       with:
+#         node-version: '14'  # You can adjust this to your project's Node.js version
+
+#     - name: Run ESLint and Prettier for ${{ matrix.service }}
+#       run: |
+#         npx eslint ./${{ matrix.service }} --fix --max-warnings 1000 || true
+#         npx prettier ./${{ matrix.service }} --write
+
+#     - name: Commit changes
+#       run: |
+#         git config --local user.email "action@github.com"
+#         git config --local user.name "GitHub Action"
+#         git add -A
+#         git commit -m "fix: ESLint and Prettier issues in ${{ matrix.service }}" || echo "No changes to commit in ${{ matrix.service }}"
+#         git push origin ${{ github.head_ref }}
+
+#     - name: Pull latest changes
+#       run: git pull origin ${{ github.head_ref }}
