@@ -35,7 +35,7 @@ jobs:
     #     npm install
 
     - name: Run tj-actions/eslint-changed-files
-      uses: tj-actions/eslint-changed-files@v2.1.0
+      uses: tj-actions/eslint-changed-files@v21
       with:
         token: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically creates a `GITHUB_TOKEN` secret to use in your workflow.
         eslint_flags: '--ext .js,.jsx,.ts,.tsx' # Specify the file extensions you want ESLint to check
