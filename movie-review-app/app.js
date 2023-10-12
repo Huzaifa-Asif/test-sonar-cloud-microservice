@@ -48,23 +48,39 @@ app.get('/', (req, res) => {
 app.use('/film', routeFilm);
 app.use('/user', routeUser);
 app.use('/comment', routeComment);
-
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
+// Introducing a security vulnerability: No Rate Limiting
+app.post('/unprotected-login', (req, res) => {
+  
+  
+  const { username, password } = req.body;
+  // Simulate a login attempt without rate limiting
+  if (username === "admin" && password === "password123") {
+    res.json({ message: "Logged in!" });
+  } else {
+    res.json({ message: "Invalid credentials!" });
+  }
 });
 
+
+
+      // catch 404 and forward to error handler
+      app.use(function (req, res, next) {
+        next(createError(404));
+      });
+
+
+
+const A = "AAVVV";
 
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+      res.locals.message = err.message;
+      res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+      // render the error page
+      res.status(err.status || 500);
+      res.render('error');
 });
 
 

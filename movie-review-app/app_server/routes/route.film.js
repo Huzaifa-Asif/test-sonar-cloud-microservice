@@ -68,6 +68,35 @@ router.get('/get_all', function (req, res) {
 
 });
 
+//Get All films List - duplicate function
+router.get('/get_all_film', function (req, res) {
+    film.getAllFilms(function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Error in Connecting to DB",
+                status: false
+            });
+        }
+        else if(result.length>0){
+            return res.json({
+                message: "film Exist",
+                status: true,
+                data: result
+            });
+        }
+        else{
+            return res.json({ 
+                message: "No film Exist",
+                status: false,
+                data: result
+            });
+        }
+        
+    });
+
+});
+
 
 
 //Get film By Id
