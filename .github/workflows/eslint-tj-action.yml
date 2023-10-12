@@ -1,0 +1,41 @@
+name: TJ ESLint Changed Files
+
+on: [push, pull_request]
+
+jobs:
+  eslint-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x] # Define the Node.js version(s) you want the check to run on.
+    
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    # Install dependencies here, if needed, for each project
+    # - name: Install dependencies for movie-review-app
+    #   run: |
+    #     cd movie-review-app
+    #     npm install
+
+    # - name: Install dependencies for chat-app
+    #   run: |
+    #     cd chat-app
+    #     npm install
+
+    # - name: Install dependencies for lambda/save-picture
+    #   run: |
+    #     cd lambda/save-picture
+    #     npm install
+
+    - name: Run tj-actions/eslint-changed-files
+      uses: tj-actions/eslint-changed-files@v2.1.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }} # GitHub automatically creates a `GITHUB_TOKEN` secret to use in your workflow.
+        eslint_flags: '--ext .js,.jsx,.ts,.tsx' # Specify the file extensions you want ESLint to check
