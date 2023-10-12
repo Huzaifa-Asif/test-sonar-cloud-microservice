@@ -42,21 +42,24 @@ jobs:
 
     - name: Fix Lint Errors
       if: failure()
-      run: yarn stylelint:fix
+      run: npx eslint --fix
 
     - name: Fix ESLint errors for a nested project with changed files and .eslintignore
       if: failure()
       uses: ./
       with:
-        path: "/"
-        # config_path: ".eslintrc.js"
+        path: |
+          'movie-review-app/**'
+          'chat-app/**'
+          'lambda/save-picture/**'
+        config_path: ".eslintrc"
         file_extensions: |
-            **/*.ts
-            **/*.tsx
-            **/*.js
-            **/*.jsx
+          **/*.ts
+          **/*.tsx
+          **/*.js
+          **/*.jsx
         extra_args: "--fix"
-        # ignore_path: ".eslintignore"
+        ignore_path: ".eslintignore"
         skip_annotations: true
 
     - name: Verify Changed files
