@@ -6,24 +6,24 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 global.__basedir = __dirname;
 
-
 // routes
 const routeFilm = require('./app_server/routes/route.film.js');
 const routeUser = require('./app_server/routes/route.user.js');
 const routeComment = require('./app_server/routes/route.comment.js');
 
-
 const cors = require('cors');
-
 
 const app = express();
 app.use(cors());
 
 // Set up mongoose connection
-const dev_db_url = 'mongodb+srv://huzaifa:tech8580@cluster0.mfoye.mongodb.net/moviereview?retryWrites=true';
+const dev_db_url =
+    'mongodb+srv://huzaifa:tech8580@cluster0.mfoye.mongodb.net/moviereview?retryWrites=true';
 const mongoDB = process.env.MONGODB_URI || dev_db_url;
-mongoose.connect(mongoDB, { useNewUrlParser: true }).then(() => console.log('MongoDB connected…'))
-    .catch(err => console.log(err));
+mongoose
+    .connect(mongoDB, { useNewUrlParser: true })
+    .then(() => console.log('MongoDB connected…'))
+    .catch((err) => console.log(err));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
@@ -43,14 +43,11 @@ app.get('/', (req, res) => {
     return res.json({ message: 'Welcome to Movie Review App Backend' });
 });
 
-
 app.use('/film', routeFilm);
 app.use('/user', routeUser);
 app.use('/comment', routeComment);
 // Introducing a security vulnerability: No Rate Limiting
 app.post('/unprotected-login', (req, res) => {
-
-
     const { username, password } = req.body;
     // Simulate a login attempt without rate limiting
     if (username === 'admin' && password === 'password123') {
@@ -60,18 +57,14 @@ app.post('/unprotected-login', (req, res) => {
     }
 });
 
-
-
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-next(createError(404));
+    next(createError(404));
 });
 
-
 var A = 'AAVVV';
-var B = "ddhdhd";
-let cc = "ddhdhd";
+var B = 'ddhdhd';
+let cc = 'ddhdhd';
 
 // error handler
 app.use(function (err, req, res, next) {
@@ -83,6 +76,5 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render('error');
 });
-
 
 module.exports = app;
