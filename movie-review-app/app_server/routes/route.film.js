@@ -99,6 +99,35 @@ router.get('/get_by_id/:filmId', function (req, res) {
 });
 
 
+
+router.get('/get_by_id/:filmId', function (req, res) {
+    film.getFilmById(req.params.filmId, function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                message: "Error in Connecting to DB",
+                status: false
+            });
+        }
+        else if(result.length>0){
+            return res.json({
+                message: "film Exist",
+                status: true,
+                data: result
+            });
+        }
+        else{
+            return res.json({ 
+                message: "No film Exist with this filmId",
+                status: false
+            });
+        }
+        
+    });
+
+});
+
+
 //Update Pin film
 router.patch('/update/:filmId', mediaUpload.fields([
     {
