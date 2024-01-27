@@ -1,4 +1,4 @@
-FROM python:alpine
+FROM python:3.12.1-alpine3.19
 RUN apk add --update npm
 RUN npm install -g npm@7.5.2
 RUN apk update && \
